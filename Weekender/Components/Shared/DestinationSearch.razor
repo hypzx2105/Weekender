@@ -3,6 +3,7 @@
 
 @inject IGeocodingService GeocodingService
 @inject ILogger<DestinationSearch> Logger
+@inject NavigationManager Navigation
 
 
 <div class="search-bar">
@@ -36,7 +37,7 @@ else if (results.Count > 0)
         @foreach (Destination destination in results)
         {
             <div class="col-12 col-md-6 col-xl-4">
-                <div class="destination-card">
+                <div class="destination-card" role="button" @onclick="() => OpenPlan(destination)">
                     @if (!string.IsNullOrEmpty(destination.FlagUrl))
                     {
                         <img src="@destination.FlagUrl" alt="Flag of @destination.Country" class="flag" />
@@ -99,6 +100,11 @@ else if (results.Count > 0)
     }
     
     
+    private void OpenPlan(Destination destination)
+    {
+        
+        Navigation.NavigateTo(destination.ToPlanUrl());
+    }
 
     private async Task HandleKeyDown(KeyboardEventArgs e)
     {

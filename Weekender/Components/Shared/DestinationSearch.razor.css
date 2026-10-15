@@ -38,6 +38,7 @@
     border-radius: var(--wk-radius);
     padding: 1rem 1.25rem;
     box-shadow: 0 2px 8px rgba(11, 37, 69, 0.08);
+    cursor: pointer;
    
 }
 

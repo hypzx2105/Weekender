@@ -1,4 +1,6 @@
-﻿namespace Weekender.Models
+﻿using System.Globalization;
+
+namespace Weekender.Models
 {
     
     public class Destination
@@ -68,6 +70,16 @@
             this.longitude = longitude;
             region = string.Empty;
             timezone = "auto";
+        }
+        
+        
+        public string ToPlanUrl()
+        {
+            string lat = latitude.ToString(CultureInfo.InvariantCulture);
+            string lon = longitude.ToString(CultureInfo.InvariantCulture);
+
+            return $"plan?name={Uri.EscapeDataString(name)}&country={Uri.EscapeDataString(country)}&code={countryCode}"
+                   + $"&region={Uri.EscapeDataString(region)}&lat={lat}&lon={lon}&tz={Uri.EscapeDataString(timezone)}";
         }
 
         
