@@ -1,0 +1,116 @@
+﻿<h3>Destination Search</h3>
+
+
+@inject IGeocodingService GeocodingService
+@inject ILogger<DestinationSearch> Logger
+
+
+<div class="search-bar">
+    <input class="form-control form-control-lg" placeholder="Where to? Lisbon, Krakow, Budapest" aria-label="City name"
+           @bind="searchText" @bind:event="oninput" @onkeydown="HandleKeyDown" />
+    <button class="btn btn-primary btn-lg" @onclick="SearchAsync" disabled="@isLoading">Search</button>
+</div>
+
+
+
+@if (isLoading)
+{
+    <div class="status-message">
+        <div class="spinner-border text-secondary" role="status"></div>
+        <span>Looking for "@lastSearch"...</span>
+    </div>
+}
+else if (errorMessage != null)
+{
+    <div class="alert alert-warning">@errorMessage</div>
+}
+else if (hasSearched && results.Count == 0)
+{
+    <div class="status-message">No cities found for "@lastSearch". Check the spelling or try a bigger city nearby.</div>
+}
+else if (results.Count > 0)
+{
+    <p class="results-count">@results.Count result(s) for "@lastSearch"</p>
+
+    <div class="row g-3">
+        @foreach (Destination destination in results)
+        {
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="destination-card">
+                    @if (!string.IsNullOrEmpty(destination.FlagUrl))
+                    {
+                        <img src="@destination.FlagUrl" alt="Flag of @destination.Country" class="flag" />
+                    }
+                    <div>
+                        <h5>@destination.Name</h5>
+                        <p class="details">@(string.IsNullOrEmpty(destination.Region) ? destination.Country : $"{destination.Region}, {destination.Country}")</p>
+                        @if (destination.Population > 0)
+                        {
+                            <p class="details">Population: @destination.Population.ToString("N0")</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+
+
+@code {
+    
+    private string searchText = string.Empty;
+    private string lastSearch = string.Empty;
+    private List<Destination> results = new List<Destination>();
+    private bool isLoading = false;
+    private bool hasSearched = false;
+    private string? errorMessage;
+    
+    private async Task SearchAsync()
+    {
+        errorMessage = null;
+
+        if (string.IsNullOrWhiteSpace(searchText) || searchText.Trim().Length < 2)
+        {
+            errorMessage = "Please type at least 2 letters of a city name.";
+            return;
+        }
+
+        isLoading = true;
+        lastSearch = searchText.Trim();
+
+        try
+        {
+            results = await GeocodingService.SearchCitiesAsync(lastSearch);
+        }
+        catch (ApiException ex)
+        {
+             
+            errorMessage = "Sorry, the city search isn't available right now. Please try again in a moment.";
+            Logger.LogWarning(ex, "City search failed for {City}", lastSearch);
+            results = new List<Destination>();
+        }
+        finally
+        {
+           
+            isLoading = false;
+            hasSearched = true;
+        }
+    }
+    
+    
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+       
+        if (e.Key == "Enter")
+        {
+            await SearchAsync();
+        }
+    }
+}
+
+
+
+
+
