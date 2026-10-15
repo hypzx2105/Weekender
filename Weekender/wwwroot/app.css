@@ -1,15 +1,34 @@
+ /*Color palette*/
+ 
+:root {
+    --wk-navy: #0B2545;
+    --wk-teal: #0E7C86;
+    --wk-coral: #FF7A59;
+    --wk-sand: #FAF7F2;
+    --wk-text: #1F2933;
+    --wk-muted: #6B7280;
+    --wk-radius: 14px;
+}
+
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: var(--wk-sand);
+    color: var(--wk-text);
 }
 
 a, .btn-link {
-    color: #006bb7;
+    color: var(--wk-teal);
 }
 
 .btn-primary {
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+    background-color: var(--wk-teal);
+    border-color: var(--wk-teal);
+}
+
+.btn-primary:hover {
+    background-color: var(--wk-navy);
+    border-color: var(--wk-navy);
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -57,4 +76,19 @@ h1:focus {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
+}
+
+
+/*Banner*/
+.hero {
+    background: linear-gradient(135deg, var(--wk-navy) 0%, var(--wk-teal) 100%);
+    color: white;
+    border-radius: var(--wk-radius);
+    padding: 2.5rem 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.hero .lead {
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 0;
 }
