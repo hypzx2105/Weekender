@@ -1,20 +1,16 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
+<NavMenu />
+
+<main class="page-container">
+    @Body
+</main>
+
+<footer class="site-footer">
+    <div class="footer-inner">
+        <span>Locations and weather by <a href="https://open-meteo.com" target="_blank">Open-Meteo</a></span>
     </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+</footer>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.

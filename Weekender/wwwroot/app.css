@@ -1,5 +1,5 @@
- /*Color palette*/
- 
+
+
 :root {
     --wk-navy: #0B2545;
     --wk-teal: #0E7C86;
@@ -79,16 +79,14 @@ h1:focus {
 }
 
 
-/*Banner*/
-.hero {
-    background: linear-gradient(135deg, var(--wk-navy) 0%, var(--wk-teal) 100%);
-    color: white;
-    border-radius: var(--wk-radius);
-    padding: 2.5rem 2rem;
-    margin-bottom: 1.5rem;
+
+.section-title {
+    margin-bottom: 0.25rem;
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
-.hero .lead {
-    color: rgba(255, 255, 255, 0.85);
-    margin-bottom: 0;
+.section-subtitle {
+    margin-bottom: 1.25rem;
+    color: var(--wk-muted);
 }

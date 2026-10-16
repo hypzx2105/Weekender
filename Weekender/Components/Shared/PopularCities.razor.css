@@ -1,0 +1,61 @@
+﻿
+.popular {
+    margin-top: 3.5rem;
+}
+
+.popular-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.city-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 150px;
+    padding: 1.25rem;
+    overflow: hidden;
+    border-radius: var(--wk-radius);
+    background: linear-gradient(135deg, var(--wk-navy), var(--wk-teal));
+    color: white;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+
+.city-tile:nth-child(3n+2) {
+    background: linear-gradient(135deg, #1F4E79, var(--wk-teal));
+}
+
+.city-tile:nth-child(3n) {
+    background: linear-gradient(135deg, var(--wk-teal), var(--wk-coral));
+}
+
+.city-tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(11, 37, 69, 0.2);
+    color: white;
+}
+
+.tile-flag {
+    position: absolute;
+    top: 1rem;
+    left: 1.25rem;
+    width: 40px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.tile-name {
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.tile-country {
+    font-size: 0.9rem;
+    opacity: 0.85;
+}
+
