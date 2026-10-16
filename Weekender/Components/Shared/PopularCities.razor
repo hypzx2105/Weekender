@@ -1,0 +1,21 @@
+﻿<section id="popular" class="popular">
+    <h2 class="section-title">Popular weekend escapes</h2>
+    <p class="section-subtitle">Short flights from Dublin</p>
+
+    <div class="popular-grid">
+        @foreach (Destination city in cities)
+        {
+            <a class="city-tile" href="@city.ToPlanUrl()">
+                <img src="@city.FlagUrl" alt="Flag of @city.Country" class="tile-flag" />
+                <span class="tile-name">@city.Name</span>
+                <span class="tile-country">@city.Country</span>
+               
+            </a>
+        }
+    </div>
+</section>
+
+@code {
+    //Fields
+    private List<Destination> cities = CuratedCities.GetPopularCities();
+}
