@@ -8,6 +8,8 @@ builder.Services.AddRazorComponents()
 
 
 builder.Services.AddSingleton<IGeocodingService, GeocodingService>();
+builder.Services.AddSingleton<IWeatherService, WeatherService>();
+
 
 var app = builder.Build();
 

@@ -1,6 +1,10 @@
-﻿namespace Weekender.Services;
+﻿using Weekender.Models;
 
-public interface IWeatherService
+namespace Weekender.Services
 {
-    
+   
+    public interface IWeatherService
+    {
+        Task<List<DailyForecast>> GetForecastAsync(double latitude, double longitude, DateTime startDate, DateTime endDate);
+    }
 }
