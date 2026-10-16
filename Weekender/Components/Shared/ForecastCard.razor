@@ -1,0 +1,16 @@
+﻿<div class="forecast-card">
+    <p class="day">@Forecast.Date.ToString("ddd d MMM")</p>
+    <i class="bi @Forecast.IconClass weather-icon" aria-hidden="true"></i>
+    <p class="description">@Forecast.Description</p>
+    <p class="temperatures">
+        <span class="max">@Forecast.MaxTemperature.ToString("0")°</span>
+        <span class="min">@Forecast.MinTemperature.ToString("0")°</span>
+    </p>
+    <p class="rain"><i class="bi bi-umbrella" aria-hidden="true"></i> @Forecast.RainChance%</p>
+</div>
+
+@code {
+   
+    [Parameter, EditorRequired]
+    public DailyForecast Forecast { get; set; } = new DailyForecast();
+}

@@ -13,6 +13,10 @@ builder.Services.AddSingleton<IWeatherService, WeatherService>();
 
 var app = builder.Build();
 
+
+
+app.UseRequestLocalization("en-IE");
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
