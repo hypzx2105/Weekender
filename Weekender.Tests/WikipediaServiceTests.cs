@@ -175,6 +175,7 @@ namespace Weekender.Tests
         [InlineData("Public university in Paris", true)]
         [InlineData("Castle in Lisbon, Portugal", false)]
         [InlineData("Art museum in Amsterdam", false)]
+        [InlineData("Roman Catholic archdiocese in Portugal", true)]
         public void IsExcluded_FiltersOutPlacesThatAreNotSights(string description, bool expected)
         {
             Assert.Equal(expected, WikipediaService.IsExcluded(description));

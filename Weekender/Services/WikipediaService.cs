@@ -26,7 +26,7 @@ namespace Weekender.Services
         {
             "station", "metro", "railway", "tram stop", "school", "college", "university", "hospital",
             "street", "avenue", "parish", "municipality", "borough", "constituency",
-            "company", "hotel", "embassy", "airport", "office", "headquarters"
+            "company", "hotel", "embassy", "airport", "office", "headquarters", "diocese"
         };
 
        
