@@ -5,9 +5,6 @@ Weekender is a Blazor web app in C# (.NET 10) that helps you plan a weekend away
 I made it for the Service Oriented Architecture (SD4) CA1 at DkIT. It uses two third party web services, Open-Meteo and Wikipedia.
 
 ![Home page](Weekender/docs/home.png)
-
-![Plan page for Lisbon](Weekender/docs/plan.png)
-
 ![Plan page for Cork](Weekender/docs/plan2.png)
 
 ## What the app does
