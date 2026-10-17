@@ -6,6 +6,7 @@ namespace Weekender.Tests
     
     public class WeatherServiceTests
     {
+        //Sample based on a real response from https://api.open-meteo.com/v1/forecast
         private const string SAMPLE_JSON = """
             {
               "latitude": 38.72, "longitude": -9.13, "timezone": "Europe/Lisbon",

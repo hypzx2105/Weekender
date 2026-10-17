@@ -9,6 +9,7 @@ namespace Weekender.Tests
     {
         private static readonly Destination LISBON = new Destination("Lisbon", "Portugal", "PT", 38.71667, -9.13333);
 
+        //Sample based on a real response from https://en.wikipedia.org/api/rest_v1/page/summary/Lisbon
         private const string SUMMARY_JSON = """
             {
               "type": "standard",

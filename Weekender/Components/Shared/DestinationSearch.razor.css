@@ -51,6 +51,7 @@
     color: var(--wk-muted);
 }
 
+/* CSS grid: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout */
 .results-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));

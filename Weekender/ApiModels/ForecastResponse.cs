@@ -2,7 +2,8 @@
 
 namespace Weekender.ApiModels
 {
-  
+    //Open-Meteo Forecast API response: https://open-meteo.com/en/docs
+    //JsonProperty: https://www.newtonsoft.com/json/help/html/JsonPropertyName.htm
     public class ForecastResponse
     {
         [JsonProperty("timezone")]

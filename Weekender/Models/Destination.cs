@@ -38,6 +38,7 @@ namespace Weekender.Models
             }
         }
 
+        //Flag images: https://flagpedia.net/download/api
         public string FlagUrl
         {
             get
@@ -51,7 +52,7 @@ namespace Weekender.Models
             }
         }
         
-        
+        //OpenStreetMap embed: https://wiki.openstreetmap.org/wiki/Export
         public string MapEmbedUrl
         {
             get
@@ -98,7 +99,8 @@ namespace Weekender.Models
             timezone = "auto";
         }
         
-        
+        //InvariantCulture: https://learn.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo.invariantculture
+        //Uri.EscapeDataString: https://learn.microsoft.com/en-us/dotnet/api/system.uri.escapedatastring
         public string ToPlanUrl()
         {
             string lat = latitude.ToString(CultureInfo.InvariantCulture);
@@ -151,6 +153,7 @@ namespace Weekender.Models
             return !(left == right);
         }
 
+        //GetHashCode: https://learn.microsoft.com/en-us/dotnet/api/system.object.gethashcode
         public override int GetHashCode()
         {
             

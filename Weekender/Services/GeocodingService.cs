@@ -7,6 +7,7 @@ namespace Weekender.Services
 {
     //Web service provider 1: Open-Meteo Geocoding API that turns a city name into coordinates.
     //https://open-meteo.com/en/docs/geocoding-api 
+    //RestSharp: https://restsharp.dev
     
     public class GeocodingService : IGeocodingService
     {

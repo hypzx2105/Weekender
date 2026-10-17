@@ -6,7 +6,8 @@ using Weekender.Models;
 
 namespace Weekender.Services
 {
-     
+    //Open-Meteo Forecast API: https://open-meteo.com/en/docs
+    //RestSharp: https://restsharp.dev
     public class WeatherService : IWeatherService
     {
         public static readonly string FORECAST_URL = "https://api.open-meteo.com/v1/";

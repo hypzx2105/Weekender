@@ -7,6 +7,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 
+//Dependency injection: https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/dependency-injection
 builder.Services.AddSingleton<IGeocodingService, GeocodingService>();
 builder.Services.AddSingleton<IWeatherService, WeatherService>();
 builder.Services.AddSingleton<IWikipediaService, WikipediaService>();
@@ -16,6 +17,7 @@ var app = builder.Build();
 
 
 
+//Localization: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/localization
 app.UseRequestLocalization("en-IE");
 
 // Configure the HTTP request pipeline.
