@@ -1,6 +1,6 @@
 ﻿namespace Weekender.Services
 {
-    
+    //Custom exceptions: https://learn.microsoft.com/en-us/dotnet/standard/exceptions/how-to-create-user-defined-exceptions
     public class ApiException : Exception
     {
         

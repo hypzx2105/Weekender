@@ -1,0 +1,43 @@
+﻿@inject IWikipediaService WikipediaService
+@inject ILogger<PopularCities> Logger
+
+<section id="popular" class="popular">
+    <h2 class="section-title">Popular weekend escapes</h2>
+    <p class="section-subtitle">Short flights from Dublin.</p>
+
+    <div class="popular-grid">
+        @foreach (Destination city in cities)
+        {
+            <a class="city-tile" href="@city.ToPlanUrl()">
+                @if (photos.ContainsKey(city.Name))
+                {
+                    <img src="@photos[city.Name]" alt="" class="tile-photo" loading="lazy" />
+                }
+                <img src="@city.FlagUrl" alt="Flag of @city.Country" class="tile-flag" />
+                <span class="tile-name">@city.Name</span>
+                <span class="tile-country">@city.Country</span>
+            </a>
+        }
+    </div>
+</section>
+
+@code {
+    
+    private List<Destination> cities = CuratedCities.GetPopularCities();
+    private Dictionary<string, string> photos = new Dictionary<string, string>();   //city name -> photo address
+
+    
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            //One request to Wikipedia brings the photos of all 8 cities
+            photos = await WikipediaService.GetCityPhotosAsync(cities);
+        }
+        catch (ApiException ex)
+        {
+            
+            Logger.LogWarning(ex, "Could not load the photos of the popular cities");
+        }
+    }
+}

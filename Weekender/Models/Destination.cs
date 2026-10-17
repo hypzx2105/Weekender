@@ -1,4 +1,6 @@
-﻿namespace Weekender.Models
+﻿using System.Globalization;
+
+namespace Weekender.Models
 {
     
     public class Destination
@@ -36,6 +38,7 @@
             }
         }
 
+        //Flag images: https://flagpedia.net/download/api
         public string FlagUrl
         {
             get
@@ -46,6 +49,32 @@
                     return string.Empty;
                 }
                 return $"https://flagcdn.com/w80/{countryCode.ToLower()}.png";
+            }
+        }
+        
+        //OpenStreetMap embed: https://wiki.openstreetmap.org/wiki/Export
+        public string MapEmbedUrl
+        {
+            get
+            {
+                string left = FormatCoordinate(longitude - 0.06);
+                string bottom = FormatCoordinate(latitude - 0.03);
+                string right = FormatCoordinate(longitude + 0.06);
+                string top = FormatCoordinate(latitude + 0.03);
+
+                return $"https://www.openstreetmap.org/export/embed.html?bbox={left},{bottom},{right},{top}"
+                       + $"&layer=mapnik&marker={FormatCoordinate(latitude)},{FormatCoordinate(longitude)}";
+            }
+        }
+
+       
+        public string MapLinkUrl
+        {
+            get
+            {
+                string lat = FormatCoordinate(latitude);
+                string lon = FormatCoordinate(longitude);
+                return $"https://www.openstreetmap.org/?mlat={lat}&mlon={lon}#map=14/{lat}/{lon}";
             }
         }
 
@@ -68,6 +97,23 @@
             this.longitude = longitude;
             region = string.Empty;
             timezone = "auto";
+        }
+        
+        //InvariantCulture: https://learn.microsoft.com/en-us/dotnet/api/system.globalization.cultureinfo.invariantculture
+        //Uri.EscapeDataString: https://learn.microsoft.com/en-us/dotnet/api/system.uri.escapedatastring
+        public string ToPlanUrl()
+        {
+            string lat = latitude.ToString(CultureInfo.InvariantCulture);
+            string lon = longitude.ToString(CultureInfo.InvariantCulture);
+
+            return $"plan?name={Uri.EscapeDataString(name)}&country={Uri.EscapeDataString(country)}&code={countryCode}"
+                   + $"&region={Uri.EscapeDataString(region)}&lat={lat}&lon={lon}&tz={Uri.EscapeDataString(timezone)}";
+        }
+        
+      
+        private static string FormatCoordinate(double value)
+        {
+            return value.ToString("0.#####", CultureInfo.InvariantCulture);
         }
 
         
@@ -107,6 +153,7 @@
             return !(left == right);
         }
 
+        //GetHashCode: https://learn.microsoft.com/en-us/dotnet/api/system.object.gethashcode
         public override int GetHashCode()
         {
             

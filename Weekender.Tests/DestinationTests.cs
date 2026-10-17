@@ -1,4 +1,6 @@
-﻿using Weekender.Models;
+﻿using System.Globalization;
+
+using Weekender.Models;
 
 namespace Weekender.Tests
 {
@@ -78,6 +80,77 @@ namespace Weekender.Tests
             Assert.False(paris.Equals("Paris"));
             Assert.False(paris.Equals(null));
             Assert.False(paris == null);
+        }
+        
+        
+        
+        [Fact]
+        public void ToPlanUrl_ContainsAllTheDestinationDetails()
+        {
+            Destination lisbon = new Destination("Lisbon", "Portugal", "PT", 38.71667, -9.13333);
+            lisbon.Timezone = "Europe/Lisbon";
+
+            string url = lisbon.ToPlanUrl();
+
+            Assert.StartsWith("plan?", url);
+            Assert.Contains("name=Lisbon", url);
+            Assert.Contains("code=PT", url);
+            Assert.Contains("lat=38.71667", url);
+            Assert.Contains("lon=-9.13333", url);
+            Assert.Contains("tz=Europe%2FLisbon", url);   
+        }
+
+        [Fact]
+        public void ToPlanUrl_EncodesSpacesAndAccents()
+        {
+            Destination panama = new Destination("Panamá City", "Panama", "PA", 8.9936, -79.51973);
+
+            string url = panama.ToPlanUrl();
+
+            Assert.Contains("name=Panam%C3%A1%20City", url);
+        }
+
+        [Fact]
+        public void ToPlanUrl_UsesDotsForDecimals_EvenOnASpanishComputer()
+        {
+            CultureInfo originalCulture = CultureInfo.CurrentCulture;
+            try
+            {
+                
+                CultureInfo.CurrentCulture = new CultureInfo("es-ES");
+                Destination lisbon = new Destination("Lisbon", "Portugal", "PT", 38.71667, -9.13333);
+
+                string url = lisbon.ToPlanUrl();
+
+                Assert.Contains("lat=38.71667", url);
+                Assert.Contains("lon=-9.13333", url);
+            }
+            finally
+            {
+               
+                CultureInfo.CurrentCulture = originalCulture;
+            }
+        }
+        
+        
+        [Fact]
+        public void MapEmbedUrl_ShowsTheAreaAroundTheCity_WithAMarkerInTheCentre()
+        {
+            Destination lisbon = new Destination("Lisbon", "Portugal", "PT", 38.72509, -9.1498);
+
+            string url = lisbon.MapEmbedUrl;
+
+            Assert.StartsWith("https://www.openstreetmap.org/export/embed.html?", url);
+            Assert.Contains("bbox=-9.2098,38.69509,-9.0898,38.75509", url);
+            Assert.Contains("marker=38.72509,-9.1498", url);
+        }
+
+        [Fact]
+        public void MapLinkUrl_PointsToTheCityOnOpenStreetMap()
+        {
+            Destination lisbon = new Destination("Lisbon", "Portugal", "PT", 38.72509, -9.1498);
+
+            Assert.Equal("https://www.openstreetmap.org/?mlat=38.72509&mlon=-9.1498#map=14/38.72509/-9.1498", lisbon.MapLinkUrl);
         }
     }
 }

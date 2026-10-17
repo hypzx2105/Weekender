@@ -2,7 +2,8 @@
 
 namespace Weekender.ApiModels
 {
-    
+    //Open-Meteo Geocoding API response: https://open-meteo.com/en/docs/geocoding-api
+    //JsonProperty: https://www.newtonsoft.com/json/help/html/JsonPropertyName.htm
     public class GeocodingResponse
     {
         [JsonProperty("results")]

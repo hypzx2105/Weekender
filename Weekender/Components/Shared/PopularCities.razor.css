@@ -1,0 +1,91 @@
+﻿
+.popular {
+    margin-top: 3.5rem;
+}
+
+/* CSS grid: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout */
+.popular-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.city-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 190px;
+    padding: 1.25rem;
+    overflow: hidden;
+    border-radius: var(--wk-radius);
+    background: linear-gradient(135deg, var(--wk-navy), var(--wk-teal));
+    color: white;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+
+.city-tile:nth-child(3n+2) {
+    background: linear-gradient(135deg, #1F4E79, var(--wk-teal));
+}
+
+.city-tile:nth-child(3n) {
+    background: linear-gradient(135deg, var(--wk-teal), var(--wk-coral));
+}
+
+.city-tile:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px rgba(11, 37, 69, 0.2);
+    color: white;
+}
+
+
+/* object-fit: https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit */
+.tile-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.city-tile:hover .tile-photo {
+    transform: scale(1.05);   
+}
+
+/* ::after: https://developer.mozilla.org/en-US/docs/Web/CSS/::after */
+.city-tile::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(11, 37, 69, 0.8) 0%, rgba(11, 37, 69, 0) 60%);
+}
+
+.tile-flag {
+    position: absolute;
+    top: 1rem;
+    left: 1.25rem;
+    z-index: 1;
+    width: 40px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+
+.tile-name {
+    position: relative;
+    z-index: 1;
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.tile-country {
+    position: relative;
+    z-index: 1;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}

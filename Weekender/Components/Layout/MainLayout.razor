@@ -1,23 +1,20 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu/>
+<NavMenu />
+
+<main class="page-container">
+    @Body
+</main>
+
+<footer class="site-footer">
+    <div class="footer-credits">
+        <span class="credit-left">Weather by <a href="https://open-meteo.com" target="_blank">Open-Meteo</a></span>
+        <span class="credit-center">Places and photos from <a href="https://www.wikipedia.org" target="_blank">Wikipedia</a></span>
+        <span class="credit-right">Map <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors</span>
     </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
-
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+    
+</footer>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
 </div>
