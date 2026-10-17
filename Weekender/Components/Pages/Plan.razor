@@ -1,5 +1,6 @@
 ﻿@page "/plan"
 @inject IWeatherService WeatherService
+@inject IWikipediaService WikipediaService
 @inject ILogger<Plan> Logger
 
 <PageTitle>@(destination == null ? "Plan a trip" : $"{destination.Name} - Weekender")</PageTitle>
@@ -12,81 +13,162 @@
 }
 else
 {
-    <section class="plan-header">
-        @if (!string.IsNullOrEmpty(destination.FlagUrl))
+    <section class="plan-hero">
+        @if (summary != null && summary.HasImage)
         {
-            <img src="@destination.FlagUrl" alt="Flag of @destination.Country" class="flag-large" />
+            <img src="@summary.ImageUrl" alt="Photo of @destination.Name" class="hero-photo" />
         }
-        <div>
-            <h1>@destination.Name</h1>
-            <p>@destination.DisplayName · @destination.Timezone</p>
+        <div class="hero-content">
+            <a href="" class="back-link">Back</a>
+            <div class="hero-title">
+                @if (!string.IsNullOrEmpty(destination.FlagUrl))
+                {
+                    <img src="@destination.FlagUrl" alt="Flag of @destination.Country" class="hero-flag" />
+                }
+                <div>
+                    <h1>@destination.Name</h1>
+                    <p>@destination.DisplayName</p>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="trip-dates">
-        <div>
+    <section class="trip-panel">
+        <div class="date-field">
             <label for="start" class="form-label">Departure</label>
             <input id="start" type="date" class="form-control" @bind="startDate" @bind:after="LoadForecastAsync" />
         </div>
-        <div>
+        <div class="date-field">
             <label for="end" class="form-label">Return</label>
             <input id="end" type="date" class="form-control" @bind="endDate" @bind:after="LoadForecastAsync" />
         </div>
         @if (DateError == null)
         {
-            <p class="nights">@DateHelper.GetNights(startDate, endDate) nights</p>
+            <div class="nights">
+                <i class="bi bi-moon-stars" aria-hidden="true"></i> @DateHelper.GetNights(startDate, endDate) nights
+            </div>
         }
     </section>
 
-    @if (DateError != null)
-    {
-        <div class="alert alert-warning">@DateError</div>
-    }
-    else if (!DateHelper.IsWithinForecastRange(endDate, DateTime.Today))
-    {
-        <div class="alert alert-info">Forecasts are only available up to 16 days ahead. Choose dates closer to today to see the weather.</div>
-    }
-    else
-    {
-        <section class="weather">
-            <h2>Weather</h2>
+    <div class="plan-grid">
+        <div class="main-column">
+            <section class="plan-card">
+                <h2><i class="bi bi-book" aria-hidden="true"></i> About @destination.Name</h2>
 
-            @if (isLoadingForecast)
-            {
-                <div class="status-message">
-                    <div class="spinner-border text-secondary" role="status"></div>
-                    <span>Getting the forecast...</span>
-                </div>
-            }
-            else if (forecastError != null)
-            {
-                <div class="alert alert-warning">@forecastError</div>
-            }
-            else if (forecasts.Count > 0)
-            {
-                <div class="forecast-row">
-                    @foreach (DailyForecast day in forecasts)
+                @if (isLoadingSummary)
+                {
+                    <div class="status-message">
+                        <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+                        <span>Reading about @destination.Name...</span>
+                    </div>
+                }
+                else if (summary != null)
+                {
+                    <p class="about-text">@summary.Extract</p>
+                    @if (!string.IsNullOrEmpty(summary.PageUrl))
                     {
-                        <ForecastCard Forecast="day" />
+                        <a href="@summary.PageUrl" target="_blank" rel="noopener" class="external-link">
+                            Read more on Wikipedia <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                        </a>
                     }
-                </div>
+                }
+                else
+                {
+                    <p class="muted">There's no Wikipedia summary for this place right now.</p>
+                }
+            </section>
 
-                <div class="packing">
-                    <h3>What to pack</h3>
-                    <ul>
+            <section class="plan-card">
+                <h2><i class="bi bi-cloud-sun" aria-hidden="true"></i> Weather</h2>
+
+                @if (DateError != null)
+                {
+                    <div class="alert alert-warning">@DateError</div>
+                }
+                else if (!DateHelper.IsWithinForecastRange(endDate, DateTime.Today))
+                {
+                    <div class="alert alert-info">Forecasts are only available up to 16 days ahead. Choose dates closer to today to see the weather.</div>
+                }
+                else if (isLoadingForecast)
+                {
+                    <div class="status-message">
+                        <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+                        <span>Getting the forecast...</span>
+                    </div>
+                }
+                else if (forecastError != null)
+                {
+                    <div class="alert alert-warning">@forecastError</div>
+                }
+                else
+                {
+                    <div class="forecast-row">
+                        @foreach (DailyForecast day in forecasts)
+                        {
+                            <ForecastCard Forecast="day" />
+                        }
+                    </div>
+                }
+            </section>
+        </div>
+
+        <aside class="side-column">
+            <section class="plan-card">
+                <h2><i class="bi bi-map" aria-hidden="true"></i> On the map</h2>
+                <iframe src="@destination.MapEmbedUrl" title="Map of @destination.Name" class="map-frame" loading="lazy"></iframe>
+                <a href="@destination.MapLinkUrl" target="_blank" rel="noopener" class="external-link">
+                    View larger map <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i>
+                </a>
+            </section>
+
+            @if (forecasts.Count > 0)
+            {
+                <section class="plan-card">
+                    <h2><i class="bi bi-suitcase2" aria-hidden="true"></i> What to pack</h2>
+                    <ul class="packing-list">
                         @foreach (string tip in PackingAdvisor.GetPackingTips(forecasts))
                         {
-                            <li>@tip</li>
+                            <li><i class="bi bi-check2-circle" aria-hidden="true"></i> @tip</li>
                         }
                     </ul>
-                </div>
+                </section>
             }
-        </section>
-    }
+        </aside>
+    </div>
+
+    <section class="things-to-see">
+        <h2 class="section-title">Things to see</h2>
+        <p class="section-subtitle">Places near the centre of @destination.Name, closest first.</p>
+
+        @if (isLoadingLandmarks)
+        {
+            <div class="status-message">
+                <div class="spinner-border spinner-border-sm text-secondary" role="status"></div>
+                <span>Finding places to visit...</span>
+            </div>
+        }
+        else if (landmarksError != null)
+        {
+            <div class="alert alert-warning">@landmarksError</div>
+        }
+        else if (landmarks.Count == 0)
+        {
+            <p class="muted">We couldn't find places with photos near here.</p>
+        }
+        else
+        {
+            <div class="landmark-grid">
+                @foreach (Landmark landmark in landmarks)
+                {
+                    <LandmarkCard Place="landmark" />
+                }
+            </div>
+        }
+    </section>
 }
 
 @code {
-    
+    //Query parameters, they are read from the URL built by Destination.ToPlanUrl()
     [SupplyParameterFromQuery] public string? Name { get; set; }
     [SupplyParameterFromQuery] public string? Country { get; set; }
     [SupplyParameterFromQuery] public string? Code { get; set; }
@@ -95,15 +177,24 @@ else
     [SupplyParameterFromQuery(Name = "lon")] public double? Longitude { get; set; }
     [SupplyParameterFromQuery(Name = "tz")] public string? Timezone { get; set; }
 
-   
+    
     private Destination? destination;
     private DateTime startDate;
     private DateTime endDate;
+
+    //Weather (Open-Meteo)
     private List<DailyForecast> forecasts = new List<DailyForecast>();
     private bool isLoadingForecast = false;
     private string? forecastError;
 
-    
+    //Summary and places to see (Wikipedia)
+    private PlaceSummary? summary;
+    private bool isLoadingSummary = false;
+    private List<Landmark> landmarks = new List<Landmark>();
+    private bool isLoadingLandmarks = false;
+    private string? landmarksError;
+
+    //Calculated every time it's read, so the message updates as soon as the user changes a date
     private string? DateError
     {
         get { return DateHelper.ValidateTripDates(startDate, endDate, DateTime.Today); }
@@ -121,7 +212,7 @@ else
     {
         if (string.IsNullOrWhiteSpace(Name) || Latitude == null || Longitude == null)
         {
-            
+            //Someone opened /plan without choosing a city
             destination = null;
             return;
         }
@@ -130,7 +221,9 @@ else
         destination.Region = Region ?? string.Empty;
         destination.Timezone = Timezone ?? "auto";
 
-        await LoadForecastAsync();
+        //The three requests start at the same time and don't wait for each other.
+        //If one service fails, the other sections still work.
+        await Task.WhenAll(LoadForecastAsync(), LoadSummaryAsync(), LoadLandmarksAsync());
     }
 
     
@@ -141,7 +234,7 @@ else
 
         if (destination == null || DateError != null || !DateHelper.IsWithinForecastRange(endDate, DateTime.Today))
         {
-            
+           
             return;
         }
 
@@ -158,6 +251,58 @@ else
         finally
         {
             isLoadingForecast = false;
+            StateHasChanged();   
+        }
+    }
+
+    private async Task LoadSummaryAsync()
+    {
+        summary = null;
+        if (destination == null)
+        {
+            return;
+        }
+
+        isLoadingSummary = true;
+        try
+        {
+            summary = await WikipediaService.GetCitySummaryAsync(destination);
+        }
+        catch (ApiException ex)
+        {
+            
+            Logger.LogWarning(ex, "Wikipedia summary failed for {City}", destination.Name);
+        }
+        finally
+        {
+            isLoadingSummary = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadLandmarksAsync()
+    {
+        landmarks = new List<Landmark>();
+        landmarksError = null;
+        if (destination == null)
+        {
+            return;
+        }
+
+        isLoadingLandmarks = true;
+        try
+        {
+            landmarks = await WikipediaService.GetNearbyLandmarksAsync(destination);
+        }
+        catch (ApiException ex)
+        {
+            landmarksError = "Places to see aren't available right now. Please try again in a moment.";
+            Logger.LogWarning(ex, "Wikipedia landmarks failed for {City}", destination.Name);
+        }
+        finally
+        {
+            isLoadingLandmarks = false;
+            StateHasChanged();
         }
     }
 }

@@ -50,6 +50,32 @@ namespace Weekender.Models
                 return $"https://flagcdn.com/w80/{countryCode.ToLower()}.png";
             }
         }
+        
+        
+        public string MapEmbedUrl
+        {
+            get
+            {
+                string left = FormatCoordinate(longitude - 0.06);
+                string bottom = FormatCoordinate(latitude - 0.03);
+                string right = FormatCoordinate(longitude + 0.06);
+                string top = FormatCoordinate(latitude + 0.03);
+
+                return $"https://www.openstreetmap.org/export/embed.html?bbox={left},{bottom},{right},{top}"
+                       + $"&layer=mapnik&marker={FormatCoordinate(latitude)},{FormatCoordinate(longitude)}";
+            }
+        }
+
+       
+        public string MapLinkUrl
+        {
+            get
+            {
+                string lat = FormatCoordinate(latitude);
+                string lon = FormatCoordinate(longitude);
+                return $"https://www.openstreetmap.org/?mlat={lat}&mlon={lon}#map=14/{lat}/{lon}";
+            }
+        }
 
         
         public Destination()
@@ -80,6 +106,12 @@ namespace Weekender.Models
 
             return $"plan?name={Uri.EscapeDataString(name)}&country={Uri.EscapeDataString(country)}&code={countryCode}"
                    + $"&region={Uri.EscapeDataString(region)}&lat={lat}&lon={lon}&tz={Uri.EscapeDataString(timezone)}";
+        }
+        
+      
+        private static string FormatCoordinate(double value)
+        {
+            return value.ToString("0.#####", CultureInfo.InvariantCulture);
         }
 
         
