@@ -1,0 +1,16 @@
+﻿<a class="landmark-card" href="@Place.PageUrl" target="_blank" rel="noopener">
+    <img src="@Place.ImageUrl" alt="@Place.Title" class="landmark-photo" loading="lazy" />
+    <div class="landmark-body">
+        <h3>@Place.Title</h3>
+        <p class="landmark-description">@Place.Description</p>
+        <p class="landmark-distance">
+            <i class="bi bi-geo-alt" aria-hidden="true"></i> @Place.DistanceText
+        </p>
+    </div>
+</a>
+
+@code {
+  
+    [Parameter, EditorRequired]
+    public Landmark Place { get; set; } = new Landmark();
+}

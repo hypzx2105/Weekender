@@ -6,7 +6,7 @@
     <div class="search-bar">
         <div class="input-with-icon">
             <i class="bi bi-geo-alt" aria-hidden="true"></i>
-            <input id="city-search" class="form-control form-control-lg" aria-label="City name" placeholder="Search a city, e.g. Lisbon, Kraków, Budapest"
+            <input id="city-search" class="form-control form-control-lg" aria-label="City name" placeholder="Where next... Lisbon, Kraków, Budapest?"
                    @bind="searchText" @bind:event="oninput" @onkeydown="HandleKeyDown" />
         </div>
         <button class="btn btn-primary btn-lg" @onclick="SearchAsync" disabled="@isLoading">
@@ -34,7 +34,7 @@
     else if (results.Count > 0)
     {
         <h2 class="section-title">Results for "@lastSearch"</h2>
-        <p class="section-subtitle">@results.Count place(s) found - choose one to see its plan.</p>
+        <p class="section-subtitle">@results.Count place(s) found, choose one to see its plan.</p>
 
         <div class="results-grid">
             @foreach (Destination destination in results)

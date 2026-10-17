@@ -97,7 +97,7 @@ namespace Weekender.Tests
             Assert.Contains("code=PT", url);
             Assert.Contains("lat=38.71667", url);
             Assert.Contains("lon=-9.13333", url);
-            Assert.Contains("tz=Europe%2FLisbon", url);   //the / is encoded so it can't break the URL
+            Assert.Contains("tz=Europe%2FLisbon", url);   
         }
 
         [Fact]
@@ -130,6 +130,27 @@ namespace Weekender.Tests
                
                 CultureInfo.CurrentCulture = originalCulture;
             }
+        }
+        
+        
+        [Fact]
+        public void MapEmbedUrl_ShowsTheAreaAroundTheCity_WithAMarkerInTheCentre()
+        {
+            Destination lisbon = new Destination("Lisbon", "Portugal", "PT", 38.72509, -9.1498);
+
+            string url = lisbon.MapEmbedUrl;
+
+            Assert.StartsWith("https://www.openstreetmap.org/export/embed.html?", url);
+            Assert.Contains("bbox=-9.2098,38.69509,-9.0898,38.75509", url);
+            Assert.Contains("marker=38.72509,-9.1498", url);
+        }
+
+        [Fact]
+        public void MapLinkUrl_PointsToTheCityOnOpenStreetMap()
+        {
+            Destination lisbon = new Destination("Lisbon", "Portugal", "PT", 38.72509, -9.1498);
+
+            Assert.Equal("https://www.openstreetmap.org/?mlat=38.72509&mlon=-9.1498#map=14/38.72509/-9.1498", lisbon.MapLinkUrl);
         }
     }
 }
