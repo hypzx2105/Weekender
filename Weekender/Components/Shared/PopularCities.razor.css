@@ -14,7 +14,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    min-height: 150px;
+    min-height: 190px;
     padding: 1.25rem;
     overflow: hidden;
     border-radius: var(--wk-radius);
@@ -39,23 +39,51 @@
     color: white;
 }
 
+
+.tile-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.city-tile:hover .tile-photo {
+    transform: scale(1.05);   
+}
+
+ 
+.city-tile::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(11, 37, 69, 0.8) 0%, rgba(11, 37, 69, 0) 60%);
+}
+
 .tile-flag {
     position: absolute;
     top: 1rem;
     left: 1.25rem;
+    z-index: 1;
     width: 40px;
     height: 28px;
     object-fit: cover;
     border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
+
 .tile-name {
+    position: relative;
+    z-index: 1;
     font-size: 1.35rem;
     font-weight: 700;
 }
 
 .tile-country {
+    position: relative;
+    z-index: 1;
     font-size: 0.9rem;
-    opacity: 0.85;
+    opacity: 0.9;
 }
-

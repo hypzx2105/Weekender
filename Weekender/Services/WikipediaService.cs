@@ -105,6 +105,35 @@ namespace Weekender.Services
 
             return ParseLandmarks(response.Content, destination);
         }
+        
+        
+        public async Task<Dictionary<string, string>> GetCityPhotosAsync(List<Destination> cities)
+        {
+            List<string> titles = new List<string>();
+            foreach (Destination city in cities)
+            {
+                titles.Add(city.Name);
+            }
+
+            var request = new RestRequest("w/api.php");
+            request.AddParameter("action", "query");
+            request.AddParameter("format", "json");
+            request.AddParameter("formatversion", "2");
+            request.AddParameter("prop", "pageimages");
+            request.AddParameter("piprop", "thumbnail");
+            request.AddParameter("pithumbsize", "640");
+            request.AddParameter("titles", string.Join("|", titles));
+
+            RestResponse response = await client.ExecuteAsync(request);
+
+            if (!response.IsSuccessful)
+            {
+                throw new ApiException(SERVICE_NAME, $"Could not get the city photos. {response.ErrorMessage}",
+                    (int)response.StatusCode, response.ErrorException);
+            }
+
+            return ParseCityPhotos(response.Content);
+        }
 
         
         public static PlaceSummary? ParseSummary(string? json, Destination destination)
@@ -204,6 +233,44 @@ namespace Weekender.Services
             landmarks.Sort();
 
             return landmarks.Take(MAX_LANDMARKS).ToList();
+        }
+        
+        
+        public static Dictionary<string, string> ParseCityPhotos(string? json)
+        {
+            
+            Dictionary<string, string> photos = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return photos;
+            }
+
+            WikipediaQueryResponse? queryResponse;
+            try
+            {
+                queryResponse = JsonConvert.DeserializeObject<WikipediaQueryResponse>(json);
+            }
+            catch (JsonException ex)
+            {
+                throw new ApiException(SERVICE_NAME, "Wikipedia returned data in an unexpected format.", 0, ex);
+            }
+
+            if (queryResponse?.Query?.Pages == null)
+            {
+                return photos;
+            }
+
+            foreach (WikipediaPage page in queryResponse.Query.Pages)
+            {
+                
+                if (page.Thumbnail?.Source != null)
+                {
+                    photos[page.Title] = page.Thumbnail.Source;
+                }
+            }
+
+            return photos;
         }
 
         public static bool IsExcluded(string description)

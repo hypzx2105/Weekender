@@ -7,6 +7,7 @@ namespace Weekender.Services
     {
         Task<PlaceSummary?> GetCitySummaryAsync(Destination destination);
         Task<List<Landmark>> GetNearbyLandmarksAsync(Destination destination);
+        Task<Dictionary<string, string>> GetCityPhotosAsync(List<Destination> cities);
         
     }
 }

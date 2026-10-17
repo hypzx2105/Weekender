@@ -180,5 +180,53 @@ namespace Weekender.Tests
         {
             Assert.Equal(expected, WikipediaService.IsExcluded(description));
         }
+        
+        
+        //Sample response of the MediaWiki Action API with prop=pageimages (one request for several titles),
+        //https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=pageimages&piprop=thumbnail&pithumbsize=640&titles=Lisbon|Paris|Budapest
+        //Docs: https://www.mediawiki.org/wiki/Extension:PageImages
+        //Trimmed to the fields I use. Budapest's photo was removed on purpose to test a city without a photo.
+        
+        private const string PHOTOS_JSON = """
+                                           {
+                                             "batchcomplete": true,
+                                             "query": {
+                                               "pages": [
+                                                 { "pageid": 18091, "title": "Lisbon",
+                                                   "thumbnail": { "source": "https://upload.wikimedia.org/thumb/640px-Lisbon.jpg", "width": 640, "height": 427 } },
+                                                 { "pageid": 22989, "title": "Paris",
+                                                   "thumbnail": { "source": "https://upload.wikimedia.org/thumb/640px-Paris.jpg", "width": 640, "height": 426 } },
+                                                 { "pageid": 4061, "title": "Budapest" }
+                                               ]
+                                             }
+                                           }
+                                           """;
+
+        [Fact]
+        public void ParseCityPhotos_ReturnsOnePhotoPerCity_AndSkipsCitiesWithoutPhoto()
+        {
+            Dictionary<string, string> photos = WikipediaService.ParseCityPhotos(PHOTOS_JSON);
+
+            Assert.Equal(2, photos.Count);
+            Assert.Equal("https://upload.wikimedia.org/thumb/640px-Lisbon.jpg", photos["Lisbon"]);
+            Assert.False(photos.ContainsKey("Budapest"));
+        }
+
+        [Fact]
+        public void ParseCityPhotos_FindsCitiesIgnoringUpperAndLowerCase()
+        {
+            Dictionary<string, string> photos = WikipediaService.ParseCityPhotos(PHOTOS_JSON);
+
+            Assert.True(photos.ContainsKey("paris"));
+        }
+
+        [Fact]
+        public void ParseCityPhotos_ReturnsEmptyDictionary_ForEmptyContent()
+        {
+            Assert.Empty(WikipediaService.ParseCityPhotos(""));
+            Assert.Empty(WikipediaService.ParseCityPhotos("""{ "batchcomplete": true }"""));
+        }
+        
+        
     }
 }
