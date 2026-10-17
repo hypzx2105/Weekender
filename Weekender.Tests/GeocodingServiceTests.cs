@@ -3,8 +3,9 @@ using Weekender.Services;
 
 namespace Weekender.Tests
 {
-    //Tests for the Open-Meteo geocoding service. They use sample JSON copied from a real API response,
+    //Tests for the Open-Meteo geocoding service. They use sample JSON based on a real API response,
     //so they test parsing code without depending on the internet.
+    //Sample based on a real response from https://geocoding-api.open-meteo.com/v1/search?name=Paris
     
     public class GeocodingServiceTests
     {

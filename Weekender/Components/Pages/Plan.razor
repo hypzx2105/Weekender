@@ -169,6 +169,7 @@ else
 
 @code {
     //Query parameters, they are read from the URL built by Destination.ToPlanUrl()
+    //SupplyParameterFromQuery: https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/navigation
     [SupplyParameterFromQuery] public string? Name { get; set; }
     [SupplyParameterFromQuery] public string? Country { get; set; }
     [SupplyParameterFromQuery] public string? Code { get; set; }
@@ -223,10 +224,11 @@ else
 
         //The three requests start at the same time and don't wait for each other.
         //If one service fails, the other sections still work.
+        //Task.WhenAll: https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task.whenall
         await Task.WhenAll(LoadForecastAsync(), LoadSummaryAsync(), LoadLandmarksAsync());
     }
 
-    
+    //@bind:after: https://learn.microsoft.com/en-us/aspnet/core/blazor/components/data-binding
     private async Task LoadForecastAsync()
     {
         forecasts = new List<DailyForecast>();

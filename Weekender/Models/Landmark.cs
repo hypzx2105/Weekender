@@ -60,7 +60,7 @@ namespace Weekender.Models
             this.distanceKm = distanceKm;
         }
 
-      
+        //IComparable<T>: https://learn.microsoft.com/en-us/dotnet/api/system.icomparable-1
         public int CompareTo(Landmark? other)
         {
             if (other is null)
@@ -108,6 +108,7 @@ namespace Weekender.Models
             return !(left == right);
         }
 
+        //GetHashCode: https://learn.microsoft.com/en-us/dotnet/api/system.object.gethashcode
         public override int GetHashCode()
         {
             return title.ToLowerInvariant().GetHashCode();

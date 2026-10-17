@@ -37,6 +37,7 @@
             this.rainChance = Math.Clamp(rainChance, 0, 100);   
         }
 
+        //WMO weather interpretation codes: https://open-meteo.com/en/docs
         public static WeatherCondition GetCondition(int weatherCode)
         {
             switch (weatherCode)

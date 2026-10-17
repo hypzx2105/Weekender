@@ -11,10 +11,12 @@ namespace Weekender.Services
     //Web service provider 2: Wikipedia (free, no API key).
     //REST API page summary: description and photo of the city  https://en.wikipedia.org/api/rest_v1/
     //Action API geosearch: articles about places near the city   https://www.mediawiki.org/wiki/API:Geosearch
+    //Action API pageimages: https://www.mediawiki.org/wiki/Extension:PageImages
+    //JSON format version 2: https://www.mediawiki.org/wiki/API:JSON_version_2
     public class WikipediaService : IWikipediaService
     {
         public static readonly string WIKIPEDIA_URL = "https://en.wikipedia.org/";
-        
+        //User-Agent policy: https://foundation.wikimedia.org/wiki/Policy:User-Agent_policy
         public static readonly string USER_AGENT = "Weekender/1.0 (https://github.com/hypzx2105/Weekender)";
         public static readonly int SEARCH_RADIUS_METRES = 10000;   
         public static readonly int MAX_LANDMARKS = 8;

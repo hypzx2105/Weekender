@@ -1,4 +1,5 @@
 
+/* position: sticky: https://developer.mozilla.org/en-US/docs/Web/CSS/position */
 .top-nav {
     position: sticky;
     top: 0;

@@ -1,4 +1,6 @@
 ﻿
+/* Scoped CSS: https://learn.microsoft.com/en-us/aspnet/core/blazor/components/css-isolation */
+
 /* Banner with the Wikipedia photo of the city.
    The gradient will display if the photo is loading, or if Wikipedia has no photo. */
 .plan-hero {
@@ -9,6 +11,7 @@
     color: white;
 }
 
+/* object-fit: https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit */
 .hero-photo {
     position: absolute;
     inset: 0;
@@ -110,6 +113,7 @@
 }
 
 
+/* CSS grid: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout */
 .plan-grid {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
@@ -216,6 +220,7 @@
 }
 
 
+/* Media queries: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries/Using_media_queries */
 @media (max-width: 900px) {
     .plan-grid {
         grid-template-columns: 1fr;

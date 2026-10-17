@@ -4,6 +4,7 @@ namespace Weekender.ApiModels
 {
     
 
+    //JsonProperty: https://www.newtonsoft.com/json/help/html/JsonPropertyName.htm
     //1) REST API page summary,  https://en.wikipedia.org/api/rest_v1/page/summary/Lisbon
     public class WikipediaSummaryResponse
     {
