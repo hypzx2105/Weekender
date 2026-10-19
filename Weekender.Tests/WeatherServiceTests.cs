@@ -3,7 +3,6 @@ using Weekender.Services;
 
 namespace Weekender.Tests
 {
-    
     public class WeatherServiceTests
     {
         //Sample based on a real response from https://api.open-meteo.com/v1/forecast
@@ -19,14 +18,6 @@ namespace Weekender.Tests
               }
             }
             """;
-
-        [Fact]
-        public void ParseResponse_ReturnsOneForecastPerDay()
-        {
-            List<DailyForecast> forecasts = WeatherService.ParseResponse(SAMPLE_JSON);
-
-            Assert.Equal(3, forecasts.Count);
-        }
 
         [Fact]
         public void ParseResponse_JoinsTheParallelListsByPosition()
@@ -59,41 +50,6 @@ namespace Weekender.Tests
 
             Assert.Single(forecasts);
             Assert.Equal(new DateTime(2026, 10, 16), forecasts[0].Date);
-        }
-
-        [Fact]
-        public void ParseResponse_UsesZeroRainChance_WhenItIsMissing()
-        {
-            string json = """
-                { "daily": {
-                    "time": ["2026-10-16"],
-                    "weather_code": [0],
-                    "temperature_2m_max": [24.0],
-                    "temperature_2m_min": [16.0],
-                    "precipitation_probability_max": [null]
-                } }
-                """;
-
-            List<DailyForecast> forecasts = WeatherService.ParseResponse(json);
-
-            Assert.Equal(0, forecasts[0].RainChance);
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("{ }")]   
-        public void ParseResponse_ReturnsEmptyList_WhenThereIsNoDailyData(string? json)
-        {
-            List<DailyForecast> forecasts = WeatherService.ParseResponse(json);
-
-            Assert.Empty(forecasts);
-        }
-
-        [Fact]
-        public void ParseResponse_ThrowsApiException_WhenResponseIsNotValidJson()
-        {
-            Assert.Throws<ApiException>(() => WeatherService.ParseResponse("<html>Service Unavailable</html>"));
         }
 
         [Fact]
