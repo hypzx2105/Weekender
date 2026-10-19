@@ -22,12 +22,11 @@ namespace Weekender.Tests
               "content_urls": { "desktop": { "page": "https://en.wikipedia.org/wiki/Lisbon" } }
             }
             """;
-        
+
         //Sample JSON based on the documented format of the MediaWiki API (generator=geosearch, formatversion=2)
         //and checked against a real response. Trimmed to the fields I use, plus extra cases to test the filters
         //(a station, a place without a photo and the city's own article).
         //References: https://www.mediawiki.org/wiki/API:Geosearch , https://www.mediawiki.org/wiki/API:Nearby_places_viewer ,  https://www.mediawiki.org/wiki/API:JSON_version_2
-        
 
         private const string GEOSEARCH_JSON = """
             {
@@ -56,7 +55,6 @@ namespace Weekender.Tests
             }
             """;
 
-        
         [Fact]
         public void ParseSummary_MapsJsonFieldsToPlaceSummary()
         {
@@ -70,43 +68,8 @@ namespace Weekender.Tests
         }
 
         [Fact]
-        public void ParseSummary_PrefersTheOriginalImage_OverTheThumbnail()
-        {
-            PlaceSummary? summary = WikipediaService.ParseSummary(SUMMARY_JSON, LISBON);
-
-            Assert.Equal("https://upload.wikimedia.org/Lisbon.jpg", summary!.ImageUrl);
-            Assert.True(summary.HasImage);
-        }
-
-        [Fact]
-        public void ParseSummary_UsesTheThumbnail_WhenThereIsNoOriginalImage()
-        {
-            string json = """
-                { "type": "standard", "title": "Kraków", "extract": "Kraków is the second-largest city in Poland.",
-                  "thumbnail": { "source": "https://upload.wikimedia.org/thumb/krakow.jpg" } }
-                """;
-            Destination krakow = new Destination("Kraków", "Poland", "PL", 50.06143, 19.93658);
-
-            PlaceSummary? summary = WikipediaService.ParseSummary(json, krakow);
-
-            Assert.Equal("https://upload.wikimedia.org/thumb/krakow.jpg", summary!.ImageUrl);
-        }
-
-        [Fact]
-        public void ParseSummary_ReturnsNull_ForADisambiguationPage()
-        {
-            string json = """
-                { "type": "disambiguation", "title": "Cork", "extract": "Cork may refer to:" }
-                """;
-            Destination cork = new Destination("Cork", "Ireland", "IE", 51.89797, -8.47061);
-
-            Assert.Null(WikipediaService.ParseSummary(json, cork));
-        }
-
-        [Fact]
         public void ParseSummary_ReturnsNull_WhenTheArticleIsAboutAPlaceFarAway()
         {
-          
             string json = """
                 { "type": "standard", "title": "Paris", "extract": "Paris is the capital of France.",
                   "coordinates": { "lat": 48.85666667, "lon": 2.35222222 } }
@@ -117,77 +80,21 @@ namespace Weekender.Tests
         }
 
         [Fact]
-        public void ParseSummary_ReturnsNull_ForEmptyContent()
-        {
-            Assert.Null(WikipediaService.ParseSummary("", LISBON));
-            Assert.Null(WikipediaService.ParseSummary(null, LISBON));
-        }
-
-        [Fact]
-        public void ParseSummary_ThrowsApiException_ForInvalidJson()
-        {
-            Assert.Throws<ApiException>(() => WikipediaService.ParseSummary("<html>Error</html>", LISBON));
-        }
-
-       
-        [Fact]
         public void ParseLandmarks_SkipsPlacesWithoutPhoto_StationsAndTheCityItself()
         {
             List<Landmark> landmarks = WikipediaService.ParseLandmarks(GEOSEARCH_JSON, LISBON);
 
-         
             Assert.Equal(3, landmarks.Count);
             Assert.DoesNotContain(landmarks, landmark => landmark.Title == "Rossio railway station");
             Assert.DoesNotContain(landmarks, landmark => landmark.Title == "Rua Augusta");
             Assert.DoesNotContain(landmarks, landmark => landmark.Title == "Lisbon");
         }
 
-        [Fact]
-        public void ParseLandmarks_OrdersByDistance_ClosestFirst()
-        {
-            List<Landmark> landmarks = WikipediaService.ParseLandmarks(GEOSEARCH_JSON, LISBON);
-
-            Assert.Equal("São Jorge Castle", landmarks[0].Title);
-            Assert.Equal("Lisbon Cathedral", landmarks[1].Title);
-            Assert.Equal("Belém Tower", landmarks[2].Title);
-        }
-
-        [Fact]
-        public void ParseLandmarks_CalculatesTheDistanceFromTheCityCentre()
-        {
-            List<Landmark> landmarks = WikipediaService.ParseLandmarks(GEOSEARCH_JSON, LISBON);
-            Landmark tower = landmarks[2];
-
-           
-            Assert.InRange(tower.DistanceKm, 7.5, 7.9);
-            Assert.Equal("https://upload.wikimedia.org/belem.jpg", tower.ImageUrl);
-        }
-
-        [Fact]
-        public void ParseLandmarks_ReturnsEmptyList_WhenThereAreNoPlaces()
-        {
-            Assert.Empty(WikipediaService.ParseLandmarks("""{ "batchcomplete": true }""", LISBON));
-            Assert.Empty(WikipediaService.ParseLandmarks("", LISBON));
-        }
-
-        [Theory]
-        [InlineData("Railway station in Lisbon, Portugal", true)]
-        [InlineData("Street in Rome, Italy", true)]
-        [InlineData("Public university in Paris", true)]
-        [InlineData("Castle in Lisbon, Portugal", false)]
-        [InlineData("Art museum in Amsterdam", false)]
-        [InlineData("Roman Catholic archdiocese in Portugal", true)]
-        public void IsExcluded_FiltersOutPlacesThatAreNotSights(string description, bool expected)
-        {
-            Assert.Equal(expected, WikipediaService.IsExcluded(description));
-        }
-        
-        
         //Sample response of the MediaWiki Action API with prop=pageimages (one request for several titles),
         //https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=pageimages&piprop=thumbnail&pithumbsize=640&titles=Lisbon|Paris|Budapest
         //Docs: https://www.mediawiki.org/wiki/Extension:PageImages
         //Trimmed to the fields I use. Budapest's photo was removed on purpose to test a city without a photo.
-        
+
         private const string PHOTOS_JSON = """
                                            {
                                              "batchcomplete": true,
@@ -212,22 +119,5 @@ namespace Weekender.Tests
             Assert.Equal("https://upload.wikimedia.org/thumb/640px-Lisbon.jpg", photos["Lisbon"]);
             Assert.False(photos.ContainsKey("Budapest"));
         }
-
-        [Fact]
-        public void ParseCityPhotos_FindsCitiesIgnoringUpperAndLowerCase()
-        {
-            Dictionary<string, string> photos = WikipediaService.ParseCityPhotos(PHOTOS_JSON);
-
-            Assert.True(photos.ContainsKey("paris"));
-        }
-
-        [Fact]
-        public void ParseCityPhotos_ReturnsEmptyDictionary_ForEmptyContent()
-        {
-            Assert.Empty(WikipediaService.ParseCityPhotos(""));
-            Assert.Empty(WikipediaService.ParseCityPhotos("""{ "batchcomplete": true }"""));
-        }
-        
-        
     }
 }

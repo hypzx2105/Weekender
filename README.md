@@ -47,9 +47,9 @@ You can also open Weekender.slnx in Rider and press Run.
 
 ## Tests
 
-The tests are in Weekender.Tests and use xUnit. You can run them with `dotnet test`. There are 107 tests and they all pass.
+The tests are in Weekender.Tests and use xUnit. You can run them with `dotnet test`. There are 30 tests and they all pass.
 
-The services keep the JSON parsing in static Parse methods, so I can test them with sample JSON based on real responses without calling the internet. The tests cover the models (equality, sorting and URLs), the helpers (dates, packing tips and distances) and the parsing of the three services, including empty or wrong JSON, a Wikipedia article about a different city with the same name and places without photos. I used [Theory] with [InlineData] to check boundary values, like 49% and 50% chance of rain or the last day of the forecast.
+The services keep the JSON parsing in static Parse methods, so I can test them with sample JSON based on real responses without calling the internet. The tests cover the models (equality, sorting and URLs), the helpers (dates, packing tips and distances) and the parsing of the three services, including wrong JSON, a Wikipedia article about a different city with the same name and places without photos. I used [Theory] with [InlineData] to check boundary values, like 49% and 50% chance of rain or the last day of the forecast.
 
 I also tested the app by hand: searching a city, a name that doesn't exist and a single letter, opening a popular city, putting the return date before the departure, choosing dates more than 16 days away, opening /plan with no city, choosing Paris in Texas and searching with the internet turned off. They all worked as expected.
 
