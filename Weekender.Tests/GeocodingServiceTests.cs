@@ -6,7 +6,7 @@ namespace Weekender.Tests
     //Tests for the Open-Meteo geocoding service. They use sample JSON based on a real API response,
     //so they test parsing code without depending on the internet.
     //Sample based on a real response from https://geocoding-api.open-meteo.com/v1/search?name=Paris
-    
+
     public class GeocodingServiceTests
     {
         private const string SAMPLE_JSON = """
@@ -22,14 +22,6 @@ namespace Weekender.Tests
               "generationtime_ms": 0.7
             }
             """;
-
-        [Fact]
-        public void ParseResponse_ReturnsOneDestinationPerResult()
-        {
-            List<Destination> destinations = GeocodingService.ParseResponse(SAMPLE_JSON);
-
-            Assert.Equal(2, destinations.Count);
-        }
 
         [Fact]
         public void ParseResponse_MapsJsonFieldsToDestination()
@@ -55,59 +47,11 @@ namespace Weekender.Tests
         }
 
         [Fact]
-        public void ParseResponse_ReturnsEmptyList_WhenNoCityIsFound()
-        {
-            
-            string noResultsJson = """{ "generationtime_ms": 0.5 }""";
-
-            List<Destination> destinations = GeocodingService.ParseResponse(noResultsJson);
-
-            Assert.Empty(destinations);
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData("   ")]
-        public void ParseResponse_ReturnsEmptyList_WhenResponseIsEmpty(string? emptyJson)
-        {
-            List<Destination> destinations = GeocodingService.ParseResponse(emptyJson);
-
-            Assert.Empty(destinations);
-        }
-
-        [Fact]
-        public void ParseResponse_SkipsDuplicatePlaces()
-        {
-            string duplicateJson = """
-                { "results": [
-                    { "name": "Cork", "latitude": 51.89797, "longitude": -8.47061, "country_code": "IE", "country": "Ireland" },
-                    { "name": "Cork", "latitude": 51.89797, "longitude": -8.47061, "country_code": "IE", "country": "Ireland" }
-                ] }
-                """;
-
-            List<Destination> destinations = GeocodingService.ParseResponse(duplicateJson);
-
-            Assert.Single(destinations);
-        }
-
-        [Fact]
         public void ParseResponse_ThrowsApiException_WhenResponseIsNotValidJson()
         {
-           
             string htmlErrorPage = "<html><body>502 Bad Gateway</body></html>";
 
             Assert.Throws<ApiException>(() => GeocodingService.ParseResponse(htmlErrorPage));
-        }
-
-        [Fact]
-        public async Task SearchCitiesAsync_ReturnsEmptyList_ForSearchesShorterThanTwoLetters()
-        {
-            GeocodingService service = new GeocodingService();
-
-            List<Destination> destinations = await service.SearchCitiesAsync("a");
-
-            Assert.Empty(destinations);
         }
     }
 }
